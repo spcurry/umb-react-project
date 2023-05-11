@@ -1,28 +1,19 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import CptCode from '../models/CptCode';
-import { CptCodeService } from '../CptCode.service';
 
 type Props = {
+  cptCodes: CptCode[];
   selectedCptCode: CptCode | undefined;
   onCptCodeChanged: Dispatch<SetStateAction<CptCode | undefined>>;
 }
 
 const CptSelect = (props: Props) => {
-  const [cptCodes, setCptCodes] = useState<CptCode[]>([]);
-
-  // Load the list of available CPT Codes
-  useEffect(() => {
-    CptCodeService.getCptCodes().then((result) => {
-      setCptCodes(result);
-    });
-  }, []);
-
-  // Event handler for when the user changes the selected code
+  // Event handler for when the user changes the selected CPT code
   const handleCodeIdChanged = (event: SelectChangeEvent) => {
     const numVal = parseInt(event.target.value);
     if (!isNaN(numVal)) {
-      const cptCode = cptCodes.find((c) => c.id === numVal);
+      const cptCode = props.cptCodes.find((c) => c.id === numVal);
       if (cptCode) {
         props.onCptCodeChanged(cptCode);
       } else {
@@ -32,7 +23,7 @@ const CptSelect = (props: Props) => {
   };
 
   // Build array of select options to display
-  const codeOptions = cptCodes.map((code) => {
+  const codeOptions = props.cptCodes.map((code) => {
     return <MenuItem key={'key_' + code.id} value={code.id}>{code.code}</MenuItem>
   });
 
