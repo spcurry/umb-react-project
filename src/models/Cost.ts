@@ -1,5 +1,5 @@
 export interface Cost {
-  id: number;
+  id?: number;
   cptCodeId: number;
   cost: number;
   facilityType: string;

@@ -1,24 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.css'
 import CptSelect from './components/CptSelect';
-import AverageCost from './components/AverageCost';
-import NewCostForm from './components/NewCostForm';
+import CptDetails from './components/CptDetails';
+import AddCost from './components/AddCost';
 import CptCode from './models/CptCode';
-import { CptCodeService } from './CptCode.service';
+import { CptCodeService } from './CptCodeService';
+import { Cost } from './models/Cost';
 
 const App = () => {
   const [selectedCptCode, setSelectedCptCode] = useState<CptCode | undefined>();
-  const [cptCodes, setCptCodes] = useState<CptCode[]>([]);
+  const [selectedAverageCost, setSelectedAverageCost] = useState<number | undefined>();
 
-  // Load the list of available CPT Codes
-  useEffect(() => {
-    CptCodeService.getCptCodes().then((result) => {
-      setCptCodes(result);
-    });
-  }, []);
+  const calculateAndSetAverageCost = (cptCode: CptCode | undefined) => {
+    if (cptCode !== undefined) {
+      CptCodeService.getCptCodeCosts(cptCode.id).then((costs: Cost[]) => {
+        const costsSum = costs.reduce((accumulator, c) => accumulator + c.cost, 0);
+        const costsAverage = costsSum / costs.length;
+        if (!isNaN(costsAverage)) {
+          setSelectedAverageCost(costsAverage);
+        } else {
+          setSelectedAverageCost(undefined);
+        }
+      });
+    } else {
+      setSelectedAverageCost(undefined);
+    }
+  }
 
   const handleNewCostAdded = () => {
-    // TODO Have Average cost recalculate the average
+    calculateAndSetAverageCost(selectedCptCode);
+  };
+
+  const handleCptCodeChanged = (newCptCode: CptCode | undefined) => {
+    setSelectedCptCode(newCptCode);
+    calculateAndSetAverageCost(newCptCode);
   };
 
   return (
@@ -30,16 +45,17 @@ const App = () => {
       </div>
       <h1>UMB React Project</h1>
       <div className="card">
-        <CptSelect cptCodes={cptCodes}
-                   selectedCptCode={selectedCptCode}
-                   onCptCodeChanged={setSelectedCptCode}></CptSelect>
-        <AverageCost selectedCptCode={selectedCptCode}></AverageCost>
-        <NewCostForm selectedCptCode={selectedCptCode}
-                     onNewCostAdded={handleNewCostAdded}></NewCostForm>
+        <div className="d-flex flex-column align-items-center">
+          <CptSelect selectedCptCode={selectedCptCode}
+                     onCptCodeChanged={handleCptCodeChanged}></CptSelect>
+          <br/>
+          <CptDetails selectedCptCode={selectedCptCode}
+                      selectedAverageCost={selectedAverageCost}></CptDetails>
+          <br/>
+          <AddCost selectedCptCode={selectedCptCode}
+                   onNewCostAdded={handleNewCostAdded}></AddCost>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Check the README to get started!
-      </p>
     </>
   )
 }
