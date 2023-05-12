@@ -90,9 +90,10 @@ const AddCost = (props: Props) => {
         <Button variant="contained" onClick={handleDialogOpened}>
           Add Cost
         </Button>
-        <Dialog open={dialogOpen} onClose={handleDialogClosed}>
+        <Dialog open={dialogOpen}
+                onClose={handleDialogClosed}>
           <DialogTitle>Add Cost</DialogTitle>
-          <DialogContent>
+          <DialogContent sx={{ maxWidth: '20rem'}}>
             <TextField
               autoFocus
               id="cost"
