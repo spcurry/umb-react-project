@@ -87,7 +87,7 @@ const AddCost = (props: Props) => {
   if (props.selectedCptCode) {
     return (
       <div>
-        <Button variant="outlined" onClick={handleDialogOpened}>
+        <Button variant="contained" onClick={handleDialogOpened}>
           Add Cost
         </Button>
         <Dialog open={dialogOpen} onClose={handleDialogClosed}>
@@ -125,8 +125,12 @@ const AddCost = (props: Props) => {
             <div style={{ color: 'red' }}>{errorMsg}</div>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDialogClosed}>Cancel</Button>
-            <Button onClick={handleAddCost}>Add</Button>
+            <Button variant="contained"
+                    color="secondary"
+                    onClick={handleDialogClosed}>Cancel</Button>
+            <Button variant="contained"
+                    color="primary"
+                    onClick={handleAddCost}>Add</Button>
           </DialogActions>
         </Dialog>
       </div>
