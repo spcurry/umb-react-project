@@ -1,3 +1,5 @@
+/* Importing bootstrap-grid for it's class-names to quickly use and configure Flexbox layout
+   https://css-tricks.com/snippets/css/a-guide-to-flexbox */
 @import 'bootstrap/dist/css/bootstrap-grid.css';
 
 :root {
